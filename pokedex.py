@@ -101,7 +101,7 @@ class detallesPokemon(PokemonBase):
         self.ataque = self.ataque + 10
         self.defensa = self.defensa + 10
         self.nivel = self.nivel + 10
-
+  
         if self.nivel >= 100:
             contadorEvolucion = 1
             if self.evolucion in range(1, 4):

@@ -227,7 +227,7 @@ class PokemonDB:
         else:
             print(f"No se registro ningun usuario {usuario}")
 
-                          
+                    
 class rango_invalido(Exception):
     pass
 
@@ -759,7 +759,7 @@ def bloque():
     print("---------------------------------------------------")
     print()
     print()
-   
+
 def menu():
 
     print("1- Seleccionar pokemon")
@@ -768,8 +768,9 @@ def menu():
     print("4- Entrenamiento")
     print("5- Combatir")
     print("6- Crear pokemon enemigo")
-    print("7- Salir")
+    print("7- Leer batalla")
     print("8- Guardar partida")
+    print("9- Salir")
     
 bd = PokemonDB()
 

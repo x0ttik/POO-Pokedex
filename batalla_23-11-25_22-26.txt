@@ -1,0 +1,28 @@
+=== COMBATE ===
+Pokemon: Cyndaquil
+Estadisticas: 
+Ataque: 60
+Defensa: 80
+Vida: 100
+Enemigo: Abra
+Estadisticas enemigo: 
+Ataque: 40
+Defensa: 50
+Vida: 100
+Cyndaquil paso turno
+Abra atacó a Cyndaquil (-40)
+    Impacto: 180 - 40 = 140
+Cyndaquil atacó a Abra (-60
+    Impacto: 150 - 60 = 90
+Abra paso turno
+Cyndaquil atacó a Abra (-60
+    Impacto: 90 - 60 = 30
+Abra paso turno
+Cyndaquil paso turno
+Abra paso turno
+Cyndaquil atacó a Abra (-60
+    Impacto: 30 - 60 = 0
+Abra fue derrotado.
+Resultado: ¡Victoria!, Has derrotado al Pokémon enemigo y lo has atrapado!
+Fecha y hora de la batalla: 23-11-25_22-26
+-------------------------

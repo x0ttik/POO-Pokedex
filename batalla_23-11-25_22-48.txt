@@ -1,0 +1,18 @@
+=== COMBATE ===
+Pokemon: Pichu
+Estadisticas: 
+Ataque: 40
+Defensa: 50
+Vida: 100
+Enemigo: Arcanine
+Estadisticas enemigo: 
+Ataque: 70
+Defensa: 90
+Vida: 150
+Pichu atacó a Arcanine (-40
+    Impacto: 240 - 40 = 200
+Arcanine paso turno
+Pichu huyo del combate
+Resultado: Haz perdido, sigue entrenando
+Fecha y hora de la batalla: 23-11-25_22-48
+-------------------------

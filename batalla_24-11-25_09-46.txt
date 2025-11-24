@@ -1,0 +1,29 @@
+=== COMBATE ===
+Entrenador: Paul
+Pokemon: Pichu
+Estadisticas: 
+Ataque: 40
+Defensa: 50
+Vida: 100
+Enemigo: Abra
+Estadisticas enemigo: 
+Ataque: 40
+Defensa: 50
+Vida: 100
+Pichu atacó a Abra (-40
+    Impacto: 150 - 40 = 110
+Abra atacó a Pichu (-40)
+    Impacto: 150 - 40 = 110
+Pichu atacó a Abra (-40
+    Impacto: 110 - 40 = 70
+Abra atacó a Pichu (-40)
+    Impacto: 110 - 40 = 70
+Pichu atacó a Abra (-40
+    Impacto: 70 - 40 = 30
+Abra paso turno
+Pichu atacó a Abra (-40
+    Impacto: 30 - 40 = 0
+Abra fue derrotado.
+Resultado: ¡Victoria!, Has derrotado al Pokémon enemigo y lo has atrapado!
+Fecha y hora de la batalla: 24-11-25_09-46
+-------------------------

@@ -2,6 +2,16 @@ from abc import ABC, abstractmethod
 import random
 import os
 import time
+from datetime import datetime
+import sqlite3
+
+nombre_usuario = None
+
+def obtener_nombre():
+    global nombre_usuario
+    if nombre_usuario is None:
+        nombre_usuario = input("Nombre: ")
+    return nombre_usuario
 
 def limpiar_terminal():
     os.system('cls')
@@ -13,6 +23,273 @@ def continuar():
     print()
     input("Presiona 'Enter' para continuar")
     print()
+
+class PokemonDB:
+    def __init__(self):
+        self.conexion = sqlite3.connect("pokemonDB.db")
+        self.cursor = self.conexion.cursor()
+        self.conexion.execute("PRAGMA foreign_keys = ON;")
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS usuarios(
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            nombre TEXT UNIQUE NOT NULL)
+
+        """)
+        self.conexion.commit()
+
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS pokemon(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_usuario INTEGER NOT NULL,
+            subclase INTEGER NOT NULL,
+            nombre TEXT NOT NULL,
+            descripcion TEXT NOT NULL,
+            ataque INTEGER NOT NULL,
+            defensa INTEGER NOT NULL,
+            vida INTEGER NOT NULL,
+            nivel INTEGER NOT NULL,
+            evolucion INTEGER NOT NULL,
+            max_evolucion INTEGER DEFAULT 3,
+            max_nivel INTEGER DEFAULT 100,
+            boost INTEGER DEFAULT 20,
+            atrapado INTEGER DEFAULT 0,
+            maximo INTEGER DEFAULT 0,
+            name_evo TEXT DEFAULT NULL,
+            name_evo2 TEXT DEFAULT NULL,
+            sonido TEXT DEFAULT NULL,
+            especial TEXT DEFAULT NULL,
+            ataque_especial INTEGER DEFAULT NULL,
+                            
+            FOREIGN KEY(id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE
+            )               
+        """)
+        self.conexion.commit()
+
+    def user_existe(self, usuario):
+        with self.conexion:
+            self.cursor.execute("SELECT id FROM usuarios WHERE nombre = ?", (usuario,))
+            id = self.cursor.fetchone()
+            return id is not None
+        
+    def naturaleza_pokemon(self, pokemon):
+        if isinstance(pokemon, Pokemon_agua):
+            return 2
+        elif isinstance(pokemon, Pokemon_fuego):
+            return 3
+        elif isinstance(pokemon, Pokemon_electrico):
+            return 4
+        elif isinstance(pokemon, Pokemon_hierba):
+            return 5
+        elif isinstance(pokemon, Pokemon):            
+            return 1
+        else:
+            print("No se encontro la naturaleza del pokemon en la base de datos.")
+            return 0
+        
+    def guardar_pokemon(self, id_usuario, pokemon):
+        a = pokemon
+        subclase = self.naturaleza_pokemon(pokemon)
+        atrapado = 0
+        maximo = 0
+        if a.atrapado:
+            atrapado = 1
+        if a.maximo:
+            maximo = 1
+
+
+        with self.conexion:
+            self.cursor.execute("""
+            INSERT INTO pokemon (
+                id_usuario,
+                subclase,
+                nombre,
+                descripcion,
+                ataque,
+                defensa,
+                vida,
+                nivel,
+                evolucion,
+                max_evolucion,
+                max_nivel,
+                boost,
+                atrapado,
+                maximo,
+                name_evo,
+                name_evo2,
+                sonido
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            id_usuario,
+            subclase,
+            a.nombre,
+            a.descripcion,
+            a.ataque,
+            a.defensa,
+            a.vida,
+            a.nivel,
+            a.evolucion,
+            a.max_evolucion,
+            a.max_nivel,
+            a.boost,
+            atrapado,
+            maximo,
+            a.name_evo,
+            a.name_evo_2,
+            a.sonido
+        ))
+            self.conexion.commit()
+
+    def guardar_progreso(self, usuario, pokemones_obtenidos, pokemones_enemigos):
+        lista_obtenidos = pokemones_obtenidos.lista
+        lista_enemigos = pokemones_enemigos.lista
+        with self.conexion:
+            usuario_encontrado = self.user_existe(usuario)
+            if usuario_encontrado:
+                self.cursor.execute("SELECT id FROM usuarios WHERE nombre = ?", (usuario,))
+                id = self.cursor.fetchone()[0]
+            
+                self.cursor.execute("DELETE FROM pokemon WHERE id_usuario = ?", (id,))
+                self.conexion.commit()
+            else:
+                self.cursor.execute ("INSERT INTO usuarios(nombre) VALUES(?)", (usuario,))
+                self.conexion.commit()
+
+                self.cursor.execute("SELECT id FROM usuarios WHERE nombre = ?", (usuario,))
+                id = self.cursor.fetchone()[0]
+            try:
+                for pokemon in lista_obtenidos:
+                    self.guardar_pokemon(id, pokemon)
+                
+                if len(lista_enemigos) > 0:
+                    for pokemon in lista_enemigos:
+                        self.guardar_pokemon(id, pokemon)
+
+                print("Partida guardada exitosamente. Vuelve con tu nombre de usuario para continuar la partida.")        
+            except:
+                print("Ocurrio un error inesperado en la base de datos.")  
+
+    def cargar_personajes(self, id_usuario, atrapado):
+        with self.conexion:
+            self.cursor.execute("""
+                SELECT 
+                    subclase, nombre, descripcion,
+                    ataque, defensa, vida, nivel, evolucion,
+                    maximo, name_evo, name_evo2, sonido
+                FROM pokemon
+                WHERE id_usuario = ? AND atrapado = ?
+            """, (id_usuario, atrapado))
+
+            lista = self.cursor.fetchall()
+            if len(lista) < 1:
+                return []
+            lista_pokemones = []
+            for p in lista:
+                if int(p[0]) == 1:
+                    pokemon = Pokemon()
+                elif int(p[0]) == 2:
+                    pokemon = Pokemon_agua()
+                elif int(p[0]) == 3:
+                    pokemon = Pokemon_fuego()
+                elif int(p[0]) == 4:
+                    pokemon = Pokemon_electrico()
+                elif int(p[0]) == 5:
+                    pokemon = Pokemon_hierba()
+                else:
+                    print(f"No se encontro la subclase {p[0]} en la base de datos")
+                    print("DEBUG subclase:", p[0], type(p[0]))
+
+                    continue    
+                pokemon.editar_atributos(p[1], p[3], p[4], p[5] ) 
+                pokemon.nivel = p[6]
+                pokemon.evolucion = p[7]
+                if p[8] == 1:
+                    pokemon.maximo = True
+                if p[9] is not None:
+                    pokemon.name_evo = p[9] 
+                if p[10] is not None:
+                    pokemon.name_evo_2 = p[10]
+                if p[11] is not None:
+                    pokemon.sonido = p[11]         
+                pokemon.editar_descripcion(p[2])
+
+                lista_pokemones.append(pokemon)           
+            return lista_pokemones    
+                
+                    
+    def cargar_progreso(self, usuario):
+        if self.user_existe(usuario):
+            self.cursor.execute("SELECT id FROM usuarios WHERE nombre = ?", (usuario,))
+            id = self.cursor.fetchone()[0]
+            atrapados = self.cargar_personajes(id, 1)
+            enemigos = self.cargar_personajes(id, 0)
+
+            pokemones_atrapados = Pokemones_atrapados()
+            pokemones_enemigos = Lista_pokemones()
+
+            for pokemon in atrapados:
+                pokemones_atrapados.agregar_pokemon(pokemon)
+            if len(enemigos) > 0:
+                for pokemon in enemigos:
+                    pokemones_enemigos.agregar_pokemon(pokemon)            
+
+            return pokemones_atrapados, pokemones_enemigos
+        else:
+            print(f"No se registro ningun usuario {usuario}")
+
+
+def guardar_batalla(nosotros, contrincante, historial_turnos, gano):
+    fecha = datetime.now().strftime("%d-%m-%y_%H-%M")
+    nombre_archivo = (f"batalla_{fecha}.txt")
+
+    nombre_usuario = obtener_nombre()
+    file = open(nombre_archivo, 'w', encoding="utf-8") 
+
+    file.write("=== COMBATE ===\n")
+    file.write(f"Entrenador: {nombre_usuario}\n")
+    file.write(f"Pokemon: {nosotros.nombre}\n")
+    file.write("Estadisticas: \n")
+    file.write(f"Ataque: {nosotros.ataque}\n")
+    file.write(f"Defensa: {nosotros.defensa}\n")
+    file.write(f"Vida: {nosotros.vida}\n")
+
+    file.write(f"Enemigo: {contrincante.nombre}\n")
+    file.write("Estadisticas enemigo: \n")
+    file.write(f"Ataque: {contrincante.ataque}\n")
+    file.write(f"Defensa: {contrincante.defensa}\n")
+    file.write(f"Vida: {contrincante.vida}\n")
+
+    turno_num = 1
+    for i in historial_turnos:
+        file.write(i + "\n")
+
+    if gano is True: 
+        resultado = "¡Victoria!, Has derrotado al Pokémon enemigo y lo has atrapado!"
+    else:
+        resultado = "Haz perdido, sigue entrenando" 
+
+    file.write(f"Resultado: {resultado}\n")
+
+    fecha_combate = datetime.now().strftime("%d-%m-%y_%H-%M")
+    file.write(f"Fecha y hora de la batalla: {fecha_combate}\n")
+    file.write("-------------------------\n")
+    file.close()
+
+    print(f"Se ha creado el archivo {nombre_archivo}")
+
+def leer_batalla():
+    nombre = input("Ingresa el nombre del archivo de batalla: ")
+
+    try:
+        with open(nombre, "r", encoding="utf-8") as file:
+            print("--- Contenido de archivo ---")
+            print(file.read())
+
+    except FileNotFoundError:
+        print("Ese nombre de archivo no existe")
+
+    except IOError:
+        print("Hubo un problema para leer el archivo")
 
 class rango_invalido(Exception):
     pass
@@ -379,6 +656,10 @@ def mostrar_vida(vida_inicial, vida_actual):
     print(f"   {vida_actual}") 
 
 def combatir(nosotros, contrincante):
+
+    historial_turnos = []
+    turno_contador = 0
+
     vida_inicial_nosotros = nosotros.vida
     vida_nosotros = nosotros.vida
     vida_inicial_contrincante = contrincante.vida
@@ -426,10 +707,19 @@ def combatir(nosotros, contrincante):
             print(f"    Ataque especial: {contrincante_especial}")
         print()
         print()
+
         if vida_contrincante == 0:
-            return True
+            historial_turnos.append(f"{contrincante.nombre} fue derrotado.")
+            resultado = True
+            guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
+            return resultado, historial_turnos
+        
         if vida_nosotros == 0:
-            return False
+            historial_turnos.append(f"{nosotros.nombre} fue derrotado.")
+            resultado = False
+            guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
+            return resultado, historial_turnos
+        
         print("1- Atacar")
         print("2- Pasar turno")
         print("3- Huir")
@@ -470,10 +760,19 @@ def combatir(nosotros, contrincante):
 
             print(f"{nosotros.nombre} atacó a {contrincante.nombre} (-{ataque_nosotros})")
             print(f"    Impacto: {previa_enemigo} - {ataque_nosotros} = {vida_contrincante + defensa_contrincante}")
+
+            historial_turnos.append(f"{nosotros.nombre} atacó a {contrincante.nombre} (-{ataque_nosotros}")
+            historial_turnos.append(f"    Impacto: {previa_enemigo} - {ataque_nosotros} = {vida_contrincante + defensa_contrincante}")
+
         elif op == 2:
             print("Pasaste turno")
+            historial_turnos.append(f"{nosotros.nombre} paso turno")
+
         elif op == 3:
-            return False  
+            historial_turnos.append(f"{nosotros.nombre} huyo del combate")
+            resultado = False
+            guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
+            return resultado, historial_turnos
             
         elif nosotros_esp and op == 4:
             if defensa_contrincante > 0:
@@ -489,7 +788,12 @@ def combatir(nosotros, contrincante):
                     vida_contrincante = 0
             print(f"Usaste tu ataque especial {nosotros.especial} (-{nosotros_especial})")  
             print(f"    Impacto: {previa_enemigo} - {nosotros_especial} = {vida_contrincante + defensa_contrincante}")
+
+            historial_turnos.append(f"Usaste tu ataque especial {nosotros.especial} (-{nosotros_especial})")
+            historial_turnos.append(f"    Impacto: {previa_enemigo} - {nosotros_especial} = {vida_contrincante + defensa_contrincante}")
+
         if vida_contrincante == 0:
+            turno_contador = turno_contador + 1
             continue
 
         print()
@@ -514,10 +818,17 @@ def combatir(nosotros, contrincante):
                 vida_nosotros -= ataque_contrincante
                 if vida_nosotros <= 0:
                     vida_nosotros = 0
+
             print(f"{contrincante.nombre} atacó a {nosotros.nombre} (-{ataque_contrincante})")
             print(f"    Impacto: {previa_nosotros} - {ataque_contrincante} = {vida_nosotros + defensa_nosotros}")
+
+            historial_turnos.append(f"{contrincante.nombre} atacó a {nosotros.nombre} (-{ataque_contrincante})")
+            historial_turnos.append(f"    Impacto: {previa_nosotros} - {ataque_contrincante} = {vida_nosotros + defensa_nosotros}")
+        
         elif op_contrincante == 2:
-            print("El contrincante paso su turno")      
+            print("El contrincante paso su turno")    
+            historial_turnos.append(f"{contrincante.nombre} paso turno")
+        
         elif contrincante_esp and op_contrincante == 3:
             if defensa_nosotros > 0:
                 defensa_nosotros -= contrincante_especial
@@ -530,8 +841,12 @@ def combatir(nosotros, contrincante):
                 vida_nosotros -= contrincante_especial
                 if vida_nosotros <= 0:
                     vida_nosotros = 0
+
             print(f"El contrincante uso su ataque especial {contrincante.especial}")          
             print(f"    Impacto: {previa_nosotros} - {contrincante_especial} = {vida_nosotros + defensa_nosotros}")
+
+            historial_turnos.append(f"El contrincante uso su ataque especial {contrincante.especial}")
+            historial_turnos.append(f"    Impacto: {previa_nosotros} - {contrincante_especial} = {vida_nosotros + defensa_nosotros}")
         
         print()                
         print("Calculando...")
@@ -547,29 +862,53 @@ def bloque():
     print()
 
 def menu():
-
     print("1- Seleccionar pokemon")
     print("2- Detalles de mi pokemon")
     print("3- Hablar pokemon")
     print("4- Entrenamiento")
     print("5- Combatir")
     print("6- Crear pokemon enemigo")
-    print("7- Salir")
-    
+    print("7- Leer batalla")
+    print("8- Guardar partida")
+    print("9- Salir")
 
+bd = PokemonDB()
 
 def main():
-    nombre_usuario = input("Nombre: ")
-    print(f"Bienvenido a la pokedex {nombre_usuario}")
-    pokemones_obtenidos, pokemones_enemigos = iniciar_personajes()
-    pokemon = pokemones_obtenidos.lista[0]
-    bloque()
+    nombre_usuario = obtener_nombre()
+    partida_op = 'n'
+    if bd.user_existe(nombre_usuario):
+        print("Tienes una partida cargada. ¿Deseas continuarla?(s/n)")
+        partida_op = input(">>")
+        if partida_op == 's':
+            print(f"Bienvenido de nuevo {nombre_usuario}")
+            pokemones_obtenidos, pokemones_enemigos = bd.cargar_progreso(nombre_usuario)
+            pokemon = pokemones_obtenidos.lista[0]
+        else:
+            print(f"Bienvenido a la pokedex {nombre_usuario}")
+            pokemones_obtenidos, pokemones_enemigos = iniciar_personajes()
+            pokemon = pokemones_obtenidos.lista[0]
+            bloque()
 
-    print(f"Tu nuevo pokemon es {pokemon.nombre}")
-    print()
-    pokemon.detalles_pokemon()
-    continuar()
-    limpiar_terminal()
+            print(f"Tu nuevo pokemon es {pokemon.nombre}")
+            print()
+            pokemon.detalles_pokemon()
+            continuar()
+            limpiar_terminal()
+
+    else:    
+        print(f"Bienvenido a la pokedex {nombre_usuario}")
+        pokemones_obtenidos, pokemones_enemigos = iniciar_personajes()
+        pokemon = pokemones_obtenidos.lista[0]
+        bloque()
+
+        print(f"Tu nuevo pokemon es {pokemon.nombre}")
+        print()
+        pokemon.detalles_pokemon()
+        continuar()
+        limpiar_terminal()
+
+
 
     while True:
         print()
@@ -589,7 +928,8 @@ def main():
                 break
             except ValueError:
                 print("Error de valor. ¡Ingresa Una opción valida!") 
-       
+            except rango_invalido:
+                print("Error de rango. Elige un rango valido(1 - 8)")
 
         if opcion == 1:
             bloque()
@@ -691,6 +1031,7 @@ def main():
                     print()
                     pokemon.entrenar()
                     continuar()
+
                 elif entrenar_op == 2:
                     while True:
                         print()
@@ -799,13 +1140,13 @@ def main():
                 continuar()
                 resultado = combatir(pokemon, enemigo)
                 efecto_espera()
-                if resultado:
+                if resultado is True:
                     pokemones_obtenidos.agregar_pokemon(enemigo)
                     pokemones_enemigos.remover_pokemon(enemigo)
                     print(f"¡¡¡Felicidades has atrapado a {enemigo.nombre}!!!")
                     print()
                     print("Ahora lo puedes encontrar en la sección 'Seleccionar pokemon'")
-                else:
+                elif resultado is False:
                     print(f"¡{enemigo.nombre} te derroto, sigue entrenando!")
 
                 continuar()
@@ -866,6 +1207,12 @@ def main():
             print("¡Ahora podras combatir contra el en la sección de combate!")
 
         elif opcion == 7:
+            leer_batalla()
+
+        elif opcion == 8:
+            bd.guardar_progreso(nombre_usuario, pokemones_obtenidos, pokemones_enemigos)
+
+        elif opcion == 9:
             bloque()
             print("Saliendo del programa...")
             break

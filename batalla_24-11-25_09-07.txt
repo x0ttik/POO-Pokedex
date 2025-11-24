@@ -1,0 +1,29 @@
+=== COMBATE ===
+Entrenador: Paul
+Pokemon: Cyndaquil
+Estadisticas: 
+Ataque: 60
+Defensa: 80
+Vida: 100
+Enemigo: Arcanine
+Estadisticas enemigo: 
+Ataque: 70
+Defensa: 90
+Vida: 150
+Cyndaquil atacó a Arcanine (-60
+    Impacto: 240 - 60 = 180
+Arcanine atacó a Cyndaquil (-70)
+    Impacto: 180 - 70 = 110
+Cyndaquil atacó a Arcanine (-60
+    Impacto: 180 - 60 = 120
+Arcanine atacó a Cyndaquil (-70)
+    Impacto: 110 - 70 = 40
+Cyndaquil atacó a Arcanine (-60
+    Impacto: 120 - 60 = 60
+Arcanine paso turno
+Cyndaquil atacó a Arcanine (-60
+    Impacto: 60 - 60 = 0
+Arcanine fue derrotado.
+Resultado: ¡Victoria!, Has derrotado al Pokémon enemigo y lo has atrapado!
+Fecha y hora de la batalla: 24-11-25_09-07
+-------------------------

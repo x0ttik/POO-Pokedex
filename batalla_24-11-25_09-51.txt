@@ -1,0 +1,27 @@
+=== COMBATE ===
+Entrenador: Eduardo
+Pokemon: Pichu
+Estadisticas: 
+Ataque: 40
+Defensa: 50
+Vida: 100
+Enemigo: Arcanine
+Estadisticas enemigo: 
+Ataque: 70
+Defensa: 90
+Vida: 150
+Pichu atacó a Arcanine (-40
+    Impacto: 240 - 40 = 200
+Arcanine paso turno
+Pichu atacó a Arcanine (-40
+    Impacto: 200 - 40 = 160
+El contrincante uso su ataque especial Algo de fuego
+    Impacto: 150 - 90 = 60
+Pichu atacó a Arcanine (-40
+    Impacto: 160 - 40 = 120
+Arcanine atacó a Pichu (-70)
+    Impacto: 60 - 70 = 0
+Pichu fue derrotado.
+Resultado: Haz perdido, sigue entrenando
+Fecha y hora de la batalla: 24-11-25_09-51
+-------------------------

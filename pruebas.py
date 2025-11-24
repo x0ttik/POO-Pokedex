@@ -4,6 +4,14 @@ import os
 import time
 from datetime import datetime
 
+nombre_usuario = None
+
+def obtener_nombre():
+    global nombre_usuario
+    if nombre_usuario is None:
+        nombre_usuario = input("Nombre: ")
+    return nombre_usuario
+
 def limpiar_terminal():
     os.system('cls')
 
@@ -19,10 +27,11 @@ def guardar_batalla(nosotros, contrincante, historial_turnos, gano):
     fecha = datetime.now().strftime("%d-%m-%y_%H-%M")
     nombre_archivo = (f"batalla_{fecha}.txt")
 
+    nombre_usuario = obtener_nombre()
     file = open(nombre_archivo, 'w', encoding="utf-8") 
 
     file.write("=== COMBATE ===\n")
-    # file.write(f"Entrenador: {nombre_entrenador}\n")
+    file.write(f"Entrenador: {nombre_usuario}\n")
     file.write(f"Pokemon: {nosotros.nombre}\n")
     file.write("Estadisticas: \n")
     file.write(f"Ataque: {nosotros.ataque}\n")
@@ -63,6 +72,9 @@ def leer_batalla():
 
     except FileNotFoundError:
         print("Ese nombre de archivo no existe")
+
+    except IOError:
+        print("Hubo un problema para leer el archivo")
 
 class rango_invalido(Exception):
     pass
@@ -649,7 +661,7 @@ def menu():
 
 
 def main():
-    nombre_usuario = input("Nombre: ")
+    nombre_usuario = obtener_nombre()
     print(f"Bienvenido a la pokedex {nombre_usuario}")
     pokemones_obtenidos, pokemones_enemigos = iniciar_personajes()
     pokemon = pokemones_obtenidos.lista[0]

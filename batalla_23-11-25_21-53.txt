@@ -1,0 +1,23 @@
+=== COMBATE ===
+Pokemon: Cyndaquil
+Estadisticas: 
+Ataque: 60
+Defensa: 80
+Vida: 100
+Enemigo: Charizard
+Estadisticas enemigo: 
+Ataque: 80
+Defensa: 100
+Vida: 150
+Cyndaquil atacó a Charizard (-60
+    Impacto: 250 - 60 = 190
+El contrincante uso su ataque especial Algo de fuego
+    Impacto: 180 - 90 = 90
+Cyndaquil atacó a Charizard (-60
+    Impacto: 190 - 60 = 130
+El contrincante uso su ataque especial Algo de fuego
+    Impacto: 90 - 90 = 0
+Cyndaquil fue derrotado.
+Resultado: Haz perdido, sigue entrenando
+Fecha y hora de la batalla: 23-11-25_21-53
+-------------------------

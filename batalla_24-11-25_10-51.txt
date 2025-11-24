@@ -1,0 +1,46 @@
+=== COMBATE ===
+Entrenador: Cris
+Pokemon: Pichu
+Estadisticas: 
+Ataque: 40
+Defensa: 50
+Vida: 100
+Enemigo: Charizard
+Estadisticas enemigo: 
+Ataque: 80
+Defensa: 100
+Vida: 150
+
+
+Turno 1
+Pichu atacó a Charizard (-40
+    Impacto: 250 - 40 = 210
+
+
+Turno 1
+Charizard paso turno
+
+
+Turno 2
+Usaste tu ataque especial Algo de electricidad (-80)
+    Impacto: 210 - 80 = 130
+
+
+Turno 2
+El contrincante uso su ataque especial Algo de fuego
+    Impacto: 150 - 90 = 60
+
+
+Turno 3
+Pichu atacó a Charizard (-40
+    Impacto: 130 - 40 = 90
+
+
+Turno 3
+El contrincante uso su ataque especial Algo de fuego
+    Impacto: 60 - 90 = 0
+Pichu fue derrotado.
+Haz perdido, sigue entrenando
+-------------------------
+Fecha y hora de la batalla: 24-11-25_10-51
+-------------------------

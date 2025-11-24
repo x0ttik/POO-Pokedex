@@ -1,0 +1,45 @@
+=== COMBATE ===
+Entrenador: Toraya
+Pokemon: Pichu
+Estadisticas: 
+Ataque: 40
+Defensa: 50
+Vida: 100
+Enemigo: Machop
+Estadisticas enemigo: 
+Ataque: 50
+Defensa: 50
+Vida: 100
+
+
+Turno 1
+Pichu atacó a Machop (-40
+    Impacto: 150 - 40 = 110
+
+
+Turno 1
+Machop atacó a Pichu (-50)
+    Impacto: 150 - 50 = 100
+
+
+Turno 2
+Pichu atacó a Machop (-40
+    Impacto: 110 - 40 = 70
+
+
+Turno 2
+Machop atacó a Pichu (-50)
+    Impacto: 100 - 50 = 50
+
+
+Turno 3
+Pichu atacó a Machop (-40
+    Impacto: 70 - 40 = 30
+
+
+Turno 3
+Machop atacó a Pichu (-50)
+    Impacto: 50 - 50 = 0
+Pichu fue derrotado.
+Haz perdido, sigue entrenandoFecha y hora de la batalla: 24-11-25_10-45
+-------------------------

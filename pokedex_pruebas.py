@@ -259,18 +259,22 @@ def guardar_batalla(nosotros, contrincante, historial_turnos, gano):
     file.write(f"Defensa: {contrincante.defensa}\n")
     file.write(f"Vida: {contrincante.vida}\n")
 
-    turno_num = 1
+    
     for i in historial_turnos:
         file.write(i + "\n")
-
+    
+    
+    
     if gano is True: 
-        resultado = "¡Victoria!, Has derrotado al Pokémon enemigo y lo has atrapado!"
+        file.write("¡Victoria!, Has derrotado al Pokémon enemigo y lo has atrapado!")
+        file.write("\n")
     else:
-        resultado = "Haz perdido, sigue entrenando" 
+        file.write("Haz perdido, sigue entrenando")
+        file.write("\n")
 
-    file.write(f"Resultado: {resultado}\n")
 
     fecha_combate = datetime.now().strftime("%d-%m-%y_%H-%M")
+    file.write("-------------------------\n")
     file.write(f"Fecha y hora de la batalla: {fecha_combate}\n")
     file.write("-------------------------\n")
     file.close()
@@ -656,9 +660,8 @@ def mostrar_vida(vida_inicial, vida_actual):
     print(f"   {vida_actual}") 
 
 def combatir(nosotros, contrincante):
-
     historial_turnos = []
-    turno_contador = 0
+    turno_contador = 1
 
     vida_inicial_nosotros = nosotros.vida
     vida_nosotros = nosotros.vida
@@ -712,13 +715,13 @@ def combatir(nosotros, contrincante):
             historial_turnos.append(f"{contrincante.nombre} fue derrotado.")
             resultado = True
             guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
-            return resultado, historial_turnos
+            return True
         
         if vida_nosotros == 0:
             historial_turnos.append(f"{nosotros.nombre} fue derrotado.")
             resultado = False
             guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
-            return resultado, historial_turnos
+            return False
         
         print("1- Atacar")
         print("2- Pasar turno")
@@ -761,14 +764,23 @@ def combatir(nosotros, contrincante):
             print(f"{nosotros.nombre} atacó a {contrincante.nombre} (-{ataque_nosotros})")
             print(f"    Impacto: {previa_enemigo} - {ataque_nosotros} = {vida_contrincante + defensa_contrincante}")
 
+            historial_turnos.append("\n")
+            historial_turnos.append(f"Turno {turno_contador}")
             historial_turnos.append(f"{nosotros.nombre} atacó a {contrincante.nombre} (-{ataque_nosotros}")
             historial_turnos.append(f"    Impacto: {previa_enemigo} - {ataque_nosotros} = {vida_contrincante + defensa_contrincante}")
 
         elif op == 2:
             print("Pasaste turno")
+
+            historial_turnos.append("\n")
+            historial_turnos.append(f"Turno {turno_contador}")
             historial_turnos.append(f"{nosotros.nombre} paso turno")
 
         elif op == 3:
+            print(f"{nosotros.nombre} huyo del combate")
+
+            historial_turnos.append("\n")
+            historial_turnos.append(f"Turno {turno_contador}")
             historial_turnos.append(f"{nosotros.nombre} huyo del combate")
             resultado = False
             guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
@@ -788,7 +800,9 @@ def combatir(nosotros, contrincante):
                     vida_contrincante = 0
             print(f"Usaste tu ataque especial {nosotros.especial} (-{nosotros_especial})")  
             print(f"    Impacto: {previa_enemigo} - {nosotros_especial} = {vida_contrincante + defensa_contrincante}")
-
+            
+            historial_turnos.append("\n")
+            historial_turnos.append(f"Turno {turno_contador}")
             historial_turnos.append(f"Usaste tu ataque especial {nosotros.especial} (-{nosotros_especial})")
             historial_turnos.append(f"    Impacto: {previa_enemigo} - {nosotros_especial} = {vida_contrincante + defensa_contrincante}")
 
@@ -821,12 +835,17 @@ def combatir(nosotros, contrincante):
 
             print(f"{contrincante.nombre} atacó a {nosotros.nombre} (-{ataque_contrincante})")
             print(f"    Impacto: {previa_nosotros} - {ataque_contrincante} = {vida_nosotros + defensa_nosotros}")
-
+            
+            historial_turnos.append("\n")
+            historial_turnos.append(f"Turno {turno_contador}")
             historial_turnos.append(f"{contrincante.nombre} atacó a {nosotros.nombre} (-{ataque_contrincante})")
             historial_turnos.append(f"    Impacto: {previa_nosotros} - {ataque_contrincante} = {vida_nosotros + defensa_nosotros}")
         
         elif op_contrincante == 2:
             print("El contrincante paso su turno")    
+
+            historial_turnos.append("\n")
+            historial_turnos.append(f"Turno {turno_contador}")
             historial_turnos.append(f"{contrincante.nombre} paso turno")
         
         elif contrincante_esp and op_contrincante == 3:
@@ -845,9 +864,12 @@ def combatir(nosotros, contrincante):
             print(f"El contrincante uso su ataque especial {contrincante.especial}")          
             print(f"    Impacto: {previa_nosotros} - {contrincante_especial} = {vida_nosotros + defensa_nosotros}")
 
+            historial_turnos.append("\n")
+            historial_turnos.append(f"Turno {turno_contador}")
             historial_turnos.append(f"El contrincante uso su ataque especial {contrincante.especial}")
             historial_turnos.append(f"    Impacto: {previa_nosotros} - {contrincante_especial} = {vida_nosotros + defensa_nosotros}")
         
+        turno_contador = turno_contador + 1
         print()                
         print("Calculando...")
         print()
@@ -1220,6 +1242,5 @@ def main():
             bloque()
             print("Elige una opcion valida")
                 
-
 
 main()

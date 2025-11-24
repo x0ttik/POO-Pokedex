@@ -1,0 +1,14 @@
+=== COMBATE ===
+Entrenador: Toraya
+Pokemon: Pichu
+Estadisticas: 
+Ataque: 40
+Defensa: 50
+Vida: 100
+Enemigo: Machop
+Estadisticas enemigo: 
+Ataque: 50
+Defensa: 50
+Vida: 100
+¡Victoria!, Has derrotado al Pokémon enemigo y lo has atrapado!Fecha y hora de la batalla: 24-11-25_10-43
+-------------------------

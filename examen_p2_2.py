@@ -761,7 +761,6 @@ def bloque():
     print()
 
 def menu():
-
     print("1- Seleccionar pokemon")
     print("2- Detalles de mi pokemon")
     print("3- Hablar pokemon")

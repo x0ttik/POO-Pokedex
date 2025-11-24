@@ -238,7 +238,7 @@ class PokemonDB:
             print(f"No se registro ningun usuario {usuario}")
 
 
-def guardar_batalla(nosotros, contrincante, historial_turnos, gano):
+def guardar_batalla(nosotros, contrincante, historial_turnos, resultado):
     fecha = datetime.now().strftime("%d-%m-%y_%H-%M")
     nombre_archivo = (f"batalla_{fecha}.txt")
 
@@ -265,7 +265,7 @@ def guardar_batalla(nosotros, contrincante, historial_turnos, gano):
     
     
     
-    if gano is True: 
+    if resultado is True: 
         file.write("¡Victoria!, Has derrotado al Pokémon enemigo y lo has atrapado!")
         file.write("\n")
     else:

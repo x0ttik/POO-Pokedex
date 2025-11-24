@@ -1,0 +1,40 @@
+=== COMBATE ===
+Entrenador: Raul
+Pokemon: Pichu
+Estadisticas: 
+Ataque: 40
+Defensa: 50
+Vida: 100
+Enemigo: Machop
+Estadisticas enemigo: 
+Ataque: 50
+Defensa: 50
+Vida: 100
+
+
+Turno 1
+Pichu atacó a Machop (-40
+    Impacto: 150 - 40 = 110
+
+
+Turno 1
+Machop paso turno
+
+
+Turno 2
+Pichu atacó a Machop (-40
+    Impacto: 110 - 40 = 70
+
+
+Turno 2
+Machop paso turno
+
+
+Turno 3
+Usaste tu ataque especial Algo de electricidad (-80)
+    Impacto: 70 - 80 = 0
+Machop fue derrotado.
+¡Victoria!, Has derrotado al Pokémon enemigo y lo has atrapado!
+-------------------------
+Fecha y hora de la batalla: 24-11-25_11-02
+-------------------------

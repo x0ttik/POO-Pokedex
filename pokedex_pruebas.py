@@ -802,7 +802,7 @@ def combatir(nosotros, contrincante):
             historial_turnos.append(f"{nosotros.nombre} huyo del combate")
             resultado = False
             guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
-            return resultado, historial_turnos
+            return False
             
         elif nosotros_esp and op == 4:
             if defensa_contrincante > 0:
@@ -908,9 +908,73 @@ def menu():
     print("4- Entrenamiento")
     print("5- Combatir")
     print("6- Crear pokemon enemigo")
-    print("7- Leer batalla")
-    print("8- Guardar partida")
-    print("9- Salir")
+    print("7- Manejo errores controlados")
+    print("8- Leer batalla")
+    print("9- Guardar partida")
+    print("10- Salir")
+
+def manejoErroresControlados():
+    print()
+    print("=== MANEJO DE ERRORES CONTROLADOS ===\n")
+
+    try:
+        valor = int("texto")  # Intentar convertir un string no numérico a entero
+    except ValueError as error:
+        print(f"ValueError: {error}")
+        print("Explicación: Ocurre al intentar convertir un dato no válido a entero o flotante.\n")
+
+    try:
+        resultado = "texto" + 5  # Intento de operación con tipos incompatibles
+    except TypeError as error:
+        print(f"TypeError: {error}")
+        print("Explicación: Ocurre cuando se aplica una operación a un tipo de dato inapropiado.\n")
+
+    try:
+        resultado = 10 / 0
+    except ZeroDivisionError as error:
+        print(f"ZeroDivisionError: {error}")
+        print("Explicación: No se puede dividir entre cero.\n")
+
+    try:
+        resultado = 2.0 ** 10000  # Cálculo que excede el límite
+    except OverflowError as error:
+        print(f"OverflowError: {error}")
+        print("Explicación: Ocurre cuando un cálculo excede el límite para un tipo de dato numérico.\n")
+
+    try:
+        lista = [1, 2, 3]
+        valor = lista[5]
+    except IndexError as error:
+        print(f"IndexError: {error}")
+        print("Explicación: Ocurre al acceder a un índice que no existe en una secuencia.\n")
+
+    try:
+        diccionario = {"a": 1, "b": 2}
+        valor = diccionario["c"]
+    except KeyError as error:
+        print(f"KeyError: {error}")
+        print("Explicación: Ocurre al intentar acceder a una clave que no existe en un diccionario.\n")
+
+    try:
+        with open("archivo_inexistente.txt", "r") as f:
+            contenido = f.read()
+    except FileNotFoundError as error:
+        print(f"FileNotFoundError: {error}")
+        print("Explicación: Ocurre al intentar abrir un archivo que no existe.\n")
+
+    try:
+        import modulo_inexistente
+    except ModuleNotFoundError as error:
+        print(f"ModuleNotFoundError: {error}")
+        print("Explicación: Ocurre cuando falla la importación de un módulo.\n")
+
+    try:
+        eval("x === 5")  # Código con sintaxis inválida
+    except SyntaxError as error:
+        print(f"SyntaxError: {error}")
+        print("Explicación: Ocurre cuando hay un error de sintaxis en el código.\n")
+
+    input("Presiona 'Enter' para volver al menú principal")
 
 bd = PokemonDB()
 
@@ -1272,12 +1336,15 @@ def main():
             print("¡Ahora podras combatir contra el en la sección de combate!")
 
         elif opcion == 7:
-            leer_batalla()
+            manejoErroresControlados()
 
         elif opcion == 8:
-            bd.guardar_progreso(nombre_usuario, pokemones_obtenidos, pokemones_enemigos)
+            leer_batalla()
 
         elif opcion == 9:
+            bd.guardar_progreso(nombre_usuario, pokemones_obtenidos, pokemones_enemigos)
+
+        elif opcion == 10:
             bloque()
             print("Saliendo del programa...")
             break

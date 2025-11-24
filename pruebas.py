@@ -483,13 +483,15 @@ def combatir(nosotros, contrincante):
 
         if vida_contrincante == 0:
             historial_turnos.append(f"{contrincante.nombre} fue derrotado.")
-            guardar_batalla(nosotros, contrincante, historial_turnos, gano = True)
-            return True, historial_turnos
+            resultado = True
+            guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
+            return resultado, historial_turnos
         
         if vida_nosotros == 0:
             historial_turnos.append(f"{nosotros.nombre} fue derrotado.")
-            guardar_batalla(nosotros, contrincante, historial_turnos, gano = False)
-            return False, historial_turnos
+            resultado = False
+            guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
+            return resultado, historial_turnos
         
         print("1- Atacar")
         print("2- Pasar turno")
@@ -541,7 +543,9 @@ def combatir(nosotros, contrincante):
 
         elif op == 3:
             historial_turnos.append(f"{nosotros.nombre} huyo del combate")
-            return False, historial_turnos
+            resultado = False
+            guardar_batalla(nosotros, contrincante, historial_turnos, resultado)
+            return resultado, historial_turnos
             
         elif nosotros_esp and op == 4:
             if defensa_contrincante > 0:
@@ -885,13 +889,13 @@ def main():
                 continuar()
                 resultado = combatir(pokemon, enemigo)
                 efecto_espera()
-                if resultado:
+                if resultado is True:
                     pokemones_obtenidos.agregar_pokemon(enemigo)
                     pokemones_enemigos.remover_pokemon(enemigo)
                     print(f"¡¡¡Felicidades has atrapado a {enemigo.nombre}!!!")
                     print()
                     print("Ahora lo puedes encontrar en la sección 'Seleccionar pokemon'")
-                else:
+                elif resultado is False:
                     print(f"¡{enemigo.nombre} te derroto, sigue entrenando!")
 
                 continuar()

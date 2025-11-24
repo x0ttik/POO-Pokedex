@@ -23,17 +23,17 @@ def guardar_batalla(nosotros, contrincante, historial_turnos, gano):
 
     file.write("=== COMBATE ===\n")
     # file.write(f"Entrenador: {nombre_entrenador}\n")
-    file.write(f"Pokemon: {nosotros['nombre']}\n")
+    file.write(f"Pokemon: {nosotros.nombre}\n")
     file.write("Estadisticas: \n")
-    file.write(f"Ataque: {nosotros['ataque']}\n")
-    file.write(f"Defensa: {nosotros['defensa']}\n")
-    file.write(f"Vida: {nosotros['vida']}\n")
+    file.write(f"Ataque: {nosotros.ataque}\n")
+    file.write(f"Defensa: {nosotros.defensa}\n")
+    file.write(f"Vida: {nosotros.vida}\n")
 
-    file.write(f"Enemigo: {contrincante['nombre']}\n")
+    file.write(f"Enemigo: {contrincante.nombre}\n")
     file.write("Estadisticas enemigo: \n")
-    file.write(f"Ataque: {contrincante['ataque']}\n")
-    file.write(f"Defensa: {contrincante['defensa']}\n")
-    file.write(f"Vida: {contrincante['vida']}\n")
+    file.write(f"Ataque: {contrincante.ataque}\n")
+    file.write(f"Defensa: {contrincante.defensa}\n")
+    file.write(f"Vida: {contrincante.vida}\n")
 
     turno_num = 1
     for i in historial_turnos:
@@ -57,7 +57,7 @@ def leer_batalla():
     nombre = input("Ingresa el nombre del archivo de batalla: ")
 
     try:
-        with open(nombre, "r", encoding="uttf-8") as file:
+        with open(nombre, "r", encoding="utf-8") as file:
             print("--- Contenido de archivo ---")
             print(file.read())
 

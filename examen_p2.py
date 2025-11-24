@@ -679,6 +679,7 @@ def main():
                             vida = validar_valor(50, 300)
                             break
                         except ValueError:
+                            print()
                             print("Los valores deben ser numeros enteros.")
                             efecto_espera()
                             bloque() 
@@ -706,8 +707,10 @@ def main():
         elif opcion == 5:
             bloque()
             print("Combatir")
+            print()
             if pokemones_enemigos.cantidad_pokemones():
                 print("Eligiendo contrincante...")
+                efecto_espera()
                 enemigo = pokemones_enemigos.elegir_aleatorio()
                 print()
                 print()
@@ -726,7 +729,7 @@ def main():
                     pokemones_enemigos.remover_pokemon(enemigo)
                     print(f"¡¡¡Felicidades has atrapado a {enemigo.nombre}!!!")
                     print()
-                    print("Ahora lo puedes encontrar en la sección para seleccionar Pokemon")
+                    print("Ahora lo puedes encontrar en la sección 'Seleccionar pokemon'")
                 else:
                     print(f"¡{enemigo.nombre} te derroto, sigue entrenando!")
 

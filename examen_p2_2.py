@@ -3,6 +3,8 @@ import random
 import os
 import time
 import sqlite3
+from datetime import datetime
+
 
 def limpiar_terminal():
     os.system('cls')
@@ -16,13 +18,14 @@ def continuar():
     print()
 class PokemonDB:
     def __init__(self):
-        self.conexion = sqlite3.connect("pokemonDB.db")
+        self.conexion = sqlite3.connect("pokemonDB_2.db")
         self.cursor = self.conexion.cursor()
         self.conexion.execute("PRAGMA foreign_keys = ON;")
         self.cursor.execute("""
         CREATE TABLE IF NOT EXISTS usuarios(
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            nombre TEXT UNIQUE NOT NULL)
+                            nombre TEXT UNIQUE NOT NULL,
+                            fecha TEXT)
 
         """)
         self.conexion.commit()
@@ -54,6 +57,12 @@ class PokemonDB:
             )               
         """)
         self.conexion.commit()
+
+    def obtener_usuarios(self):
+        with self.conexion:
+            self.cursor.execute("SELECT id, nombre, fecha FROM usuarios")
+            usuarios = self.cursor.fetchall()
+            return usuarios
 
     def user_existe(self, usuario):
         with self.conexion:
@@ -129,6 +138,18 @@ class PokemonDB:
             a.sonido
         ))
             self.conexion.commit()
+        
+    def guardar_fecha(self, id_usuario):
+        with self.conexion:
+            fecha = datetime.now().strftime("%d/%m/%Y")
+            self.cursor.execute("""
+            UPDATE usuarios
+            SET fecha = ?
+            WHERE id = ?
+        """, (fecha, id_usuario))
+        self.conexion.commit()
+        print("Se agrego la fecha correctamente")
+
 
     def guardar_progreso(self, usuario, pokemones_obtenidos, pokemones_enemigos):
         lista_obtenidos = pokemones_obtenidos.lista
@@ -154,7 +175,7 @@ class PokemonDB:
                 if len(lista_enemigos) > 0:
                     for pokemon in lista_enemigos:
                         self.guardar_pokemon(id, pokemon)
-
+                self.guardar_fecha(id)
                 print("Partida guardada exitosamente. Vuelve con tu nombre de usuario para continuar la partida.")        
             except:
                 print("Ocurrio un error inesperado en la base de datos.")  
@@ -772,30 +793,59 @@ def menu():
     print("9- Salir")
     
 bd = PokemonDB()
+def obtener_usuarios():
+    i = 0
+    usuarios = bd.obtener_usuarios()
+    relacion = []
+    if len(usuarios) > 0:
+        for usuario in usuarios:
+            id_usuario = usuario[0]
+            nombre = usuario[1]
+            fecha = usuario[2]
+            i += 1
+            relacion.append((i, fecha, nombre))
+        print("-Partidas cargadas-")
+        for a in relacion:
+            print(f"{a[0]}- {a[1]} {a[2]}")
+        print("Para cargar una partida nueva escribe '0'")
+        while True:
+            try:
+                opcion = validar_valor(0, i)
+                if opcion == 0:
+                    return None
+                break
+            except rango_invalido:
+                print("Error de rango. Elige un usuario valido.")
+            except ValueError:
+                print("Error de valor. Escribe un numero entero.")
+        for a in relacion:
+            if opcion == a[0]:
+                return a[2]
+    return None
+
+    
+            
+
+        
 
 def main():
-    nombre_usuario = input("Nombre: ")
-    partida_op = 'n'
-    if bd.user_existe(nombre_usuario):
-        print("Tienes una partida cargada. ¿Deseas continuarla?(s/n)")
-        partida_op = input(">>")
-        if partida_op == 's':
-            print(f"Bienvenido de nuevo {nombre_usuario}")
-            pokemones_obtenidos, pokemones_enemigos = bd.cargar_progreso(nombre_usuario)
-            pokemon = pokemones_obtenidos.lista[0]
-        else:
-            print(f"Bienvenido a la pokedex {nombre_usuario}")
-            pokemones_obtenidos, pokemones_enemigos = iniciar_personajes()
-            pokemon = pokemones_obtenidos.lista[0]
-            bloque()
-
-            print(f"Tu nuevo pokemon es {pokemon.nombre}")
-            print()
-            pokemon.detalles_pokemon()
-            continuar()
-            limpiar_terminal()
-
+    user = obtener_usuarios()
+    if user is not None:
+        nombre_usuario = user
     else:    
+        while True:
+            nombre_usuario = input("Nombre: ")
+            if bd.user_existe(nombre_usuario):
+                print("Este usuario ya existe. Elige un nombre nuevo")
+            else:
+                break    
+            
+
+    if bd.user_existe(nombre_usuario):
+        print(f"Bienvenido de nuevo {nombre_usuario}")
+        pokemones_obtenidos, pokemones_enemigos = bd.cargar_progreso(nombre_usuario)
+        pokemon = pokemones_obtenidos.lista[0]
+    else:
         print(f"Bienvenido a la pokedex {nombre_usuario}")
         pokemones_obtenidos, pokemones_enemigos = iniciar_personajes()
         pokemon = pokemones_obtenidos.lista[0]
